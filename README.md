@@ -5,36 +5,50 @@ A console-based cryptocurrency trading platform built in C++ as part of my Objec
 💫Key Features
 
 👉🏻 Interactive Console Interface: Menu-driven user interactions with real-time responses.
+
 👉🏻 OrderBookEntry Class: Models trading data with appropriate data types and functions.
+
 👉🏻 CSVReader Class: File I/O for reading and parsing trade data, with exception handling.
+
 👉🏻 Order Matching Engine: Iterates over trade orders, processes user inputs, and calculates basic statistics.
+
 👉🏻 Wallet Class: Demonstrates object interactions, static vs. non-static methods, and real-world modeling.
 
 💫Tech Stack
 
 👉🏻 Language: C++
+
 👉🏻 Tools: IDE (e.g., Code::Blocks, Visual Studio, or similar)
+
 👉🏻 Paradigm: Object-Oriented Programming
 
 💫 Project Goals
 
 👉🏻 Learn object-oriented programming (OOP) principles through a real-world project.
+
 👉🏻 Build a modular, interactive, and testable currency trading platform from scratch.
+
 👉🏻 Practice using C++ for data handling, file I/O, algorithms, and object interactions.
 
 🔹 Installation & Usage
 
 Clone the repo:
 git clone https://github.com/yourusername/crypto-trading-exchange.git
+
 👉🏻 Open in your preferred C++ IDE.
+
 👉🏻 Build & run the project.
+
 👉🏻 Follow the console menu to interact with the platform, create orders, and simulate trades.
 
 🔹 Project Structure
 
 👉🏻 /src             # Source code files
+
 👉🏻 /include         # Header files
+
 👉🏻 /data            # Sample CSV trade data
+
 👉🏻 README.md        # Project documentation
 
 🔹 Contribution
