@@ -23,7 +23,7 @@ using namespace std ;
         //  6- continue 
         cout << "6- Continue" << endl ;  
 
-        // 7- exit
+        // 7- exitprogram
         cout << "7- Exit" << endl ; 
 
         cout << "__________________________________" << endl ; 
@@ -83,12 +83,12 @@ using namespace std ;
      // Continue printing function 
      void PrintContinue()
      { 
-         cout << "Fast-forwarding to the next timeframe... hang tight! " ; 
+         cout << "Fast-forwarding to the next timeframe... hang tight! " << endl ; 
      }
 
      // Exit function 
 
-     void exit()
+     void exitprogram()
      { 
             cout << "Exiting program... Bye!" << endl;
      }
@@ -96,14 +96,13 @@ using namespace std ;
      // Invalid choice print function 
      void InvalidChoice()
      { 
-        cout << "Invalid choice! Choose between 1-6  " << endl ; 
+        cout << "Invalid choice! Choose between 1-7  " << endl ; 
      }
    // Process user option 
     
     void ProcessUserOption(int UserOption)
     { 
-         while(true)
-         {
+         
         if(UserOption == 1)
             { 
                  PrintHelp() ;
@@ -135,8 +134,8 @@ using namespace std ;
             }
         else if (UserOption == 7)
             {  
-               exit() ;
-               break;  // breaks the loop -> program ends
+               exitprogram() ;
+               
             }
         else
             {
@@ -145,8 +144,8 @@ using namespace std ;
             }
                
             cout << "\n###################################################" << endl ; 
-    }
-            cout << "\n###################################################" << endl ; 
+    
+           
  } 
     
 
@@ -162,7 +161,13 @@ int main()
         int UserOption = GetUser() ; // function to take user's input 
         ProcessUserOption(UserOption); //funtion to proceed with user option 
 
-        
-             return 0 ; 
+        if(UserOption == 7)
+        { 
+            break ;  // breaks the loop -> program ends
+             cout << "\n###################################################" << endl ; 
+
+        }
+           
     }
+      return 0 ; 
 }
