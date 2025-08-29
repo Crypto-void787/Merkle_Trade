@@ -158,13 +158,16 @@ int main()
       enum class OrderBookType{bid , ask} ; 
  
     //  // Modelling an order book 
-    //  double price = 5319.450228 ; 
-    //  double amount = 0.00020075 ;   
+    //  double price{5319.450228} ; 
+    //  double amount{0.00020075} ;   
     //  string Timestamp{"2020/03/17 17:01:24.884492"} ; 
     //  string Product{"BTC/USDT"} ; 
     // //  string OrderType{"Anything"} ; 
      // OrderBookType orderType = OrderBookType :: bid ;
      
+    //  int x {-5} ;  // It is signed 
+    //  cout << x << endl ; 
+
      vector<double> price ; 
      vector<double> amount ; 
      vector<string> Timestamp ; 
@@ -178,15 +181,26 @@ int main()
      Product.push_back("BTC/USDT") ; 
      OrderType.push_back(OrderBookType :: bid) ; 
 
-     cout << "Prices : " << price[0] << endl ; 
 
-     price.push_back(500.02); 
+     price.push_back(100.02); 
      amount.push_back(0.00003); 
      Timestamp.push_back("2020/03/17 17:01:24.884492") ; 
      Product.push_back("BTC/USDT") ; 
      OrderType.push_back(OrderBookType :: ask) ; 
 
-     cout << "Prices : " << price[1] << endl ; 
+    //  int n = 10 ; 
+    //   for (int i = 0 ; i < n ; ++i)
+
+     for (size_t i = 0; i < price.size(); i++) {
+         
+         cout << "Row " << i + 1 << ": "  ; 
+         cout << "Price: " << price[i] << " | "  ; 
+         cout << "Amount: " << amount[i] << " | "  ; 
+         cout << "Time: " << Timestamp[i] << " | "  ; 
+         cout << "Product: " << Product[i] << " | " ; 
+         cout << "Type: " << (OrderType[i] == OrderBookType::bid ? "bid" : "ask") << endl ; 
+         
+     }
 
 
 
