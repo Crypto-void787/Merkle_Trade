@@ -1,4 +1,6 @@
 #include<iostream>
+#include<string>
+#include<vector>
 using namespace std ; 
 
 // We are making function to make our code modular 
@@ -152,22 +154,59 @@ using namespace std ;
 
 
 int main()
-{ 
-    while(true)
-    {  
+{
+      enum class OrderBookType{bid , ask} ; 
+ 
+    //  // Modelling an order book 
+    //  double price = 5319.450228 ; 
+    //  double amount = 0.00020075 ;   
+    //  string Timestamp{"2020/03/17 17:01:24.884492"} ; 
+    //  string Product{"BTC/USDT"} ; 
+    // //  string OrderType{"Anything"} ; 
+     // OrderBookType orderType = OrderBookType :: bid ;
+     
+     vector<double> price ; 
+     vector<double> amount ; 
+     vector<string> Timestamp ; 
+     vector<string> Product ; 
+     vector<OrderBookType> OrderType ; 
 
-        Printmenu(); // Calling our function  to print the menu 
+
+     price.push_back(500.01); 
+     amount.push_back(0.00001); 
+     Timestamp.push_back("2020/03/17 17:01:24.884492") ; 
+     Product.push_back("BTC/USDT") ; 
+     OrderType.push_back(OrderBookType :: bid) ; 
+
+     cout << "Prices : " << price[0] << endl ; 
+
+     price.push_back(500.02); 
+     amount.push_back(0.00003); 
+     Timestamp.push_back("2020/03/17 17:01:24.884492") ; 
+     Product.push_back("BTC/USDT") ; 
+     OrderType.push_back(OrderBookType :: ask) ; 
+
+     cout << "Prices : " << price[1] << endl ; 
+
+
+
+
+
+    // while(true)
+    // {  
+
+    //     Printmenu(); // Calling our function  to print the menu 
         
-        int UserOption = GetUser() ; // function to take user's input 
-        ProcessUserOption(UserOption); //funtion to proceed with user option 
+    //     int UserOption = GetUser() ; // function to take user's input 
+    //     ProcessUserOption(UserOption); //funtion to proceed with user option 
 
-        if(UserOption == 7)
-        { 
-            break ;  // breaks the loop -> program ends
-             cout << "\n###################################################" << endl ; 
+    //     if(UserOption == 7)
+    //     { 
+    //         break ;  // breaks the loop -> program ends
+    //          cout << "\n###################################################" << endl ; 
 
-        }
+    //     }
            
-    }
+    // }
       return 0 ; 
 }
