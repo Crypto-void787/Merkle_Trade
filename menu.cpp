@@ -221,16 +221,28 @@ using namespace std ;
              "Fri 29 Aug, 1:40 PM",
              "BTC/USDT",
              OrderBookType :: bid    }) ; 
+     
+     Orders.push_back(OrderBookEntry{
+             10.07,
+             5.667 ,
+             "Fri 29 Aug, 4:40 PM",
+             "BTC/USDT",
+             OrderBookType :: ask   }) ; 
+
+      // method 3 to iterate 
+
+     for(unsigned int i = 0 ; i < Orders.size() ; ++i)
+      {
+           cout << "(Order # "<<  i << ") price : " << Orders.at(i).Price << endl ;  
+           cout << "(Order # "<<  i << ") amount : " << Orders.at(i).Amount << endl ;  
+           cout << "(Order # "<<  i << ") Timestamp : " << Orders.at(i).Timestamp << endl ;  
+           cout << "(Order # "<<  i << ") product : " << Orders.at(i).Product << endl ;  
+           cout << "(Order # "<<  i << ") order type : " 
+            << (Orders.at(i).OrderType == OrderBookType::bid ? "bid" : "ask") << endl ;  
+           cout << "\n<-------------------------------------------------------------> " << endl ;  
+      } 
 
 
-     for(OrderBookEntry Orders : Orders)
-     {     
-         cout << "Order price : " << Orders.Price << endl ;  
-         cout << "Order price : " << Orders.Amount<< endl ;  
-         cout << "Order price : " << Orders.Timestamp << endl ;  
-         cout << "Order  price : " << Orders.Product << endl ;    
-     }
-                    
                  
 
     return 0 ; 
