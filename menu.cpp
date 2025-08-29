@@ -5,34 +5,75 @@
 enum class OrderBookType{bid , ask} ;
 
 using namespace std ; 
-    class OrderBookEntry
-     { 
-      public: 
-      double Price ; 
-      double Amount ; 
-      string Timestamp ; 
-      string Product ; 
-      OrderBookType OrderType ; 
+   class OrderBookEntry
+   {
+      public:
+      string Timestamp;
+      string Product;
+      OrderBookType OrderType;
+      double Price;
+      double Amount;
 
-     OrderBookEntry
-      (
-      double Price,
-      double Amount,
-      string Timestamp,
-      string Product,
-      OrderBookType OrderType
+      OrderBookEntry(
+         string Timestamp,
+         string Product,
+         OrderBookType OrderType,
+         double Price,
+         double Amount
       )
-       : Price(Price),
-       Amount(Amount),
-       Timestamp(Timestamp),
-       Product(Product), 
-       OrderType(OrderType)
-       {  
-            // No need to assign again, member initializer list does it
+      : Timestamp(Timestamp),
+        Product(Product),
+        OrderType(OrderType),
+        Price(Price),
+        Amount(Amount)
+      {
+         // No need to assign again, member initializer list does it
+      }
+   };
+    
+     double computeAveragePrice(const vector<OrderBookEntry>& entries) {
+     
+      double sum = 0.0;
+      for (const auto& e : entries)
+        {
+             sum += e.Price;
         }
-       
-    }; 
+         return sum / entries.size();
+       }
 
+     double computeLowPrice(const vector<OrderBookEntry>& entries) {
+        
+       double low = entries[0].Price;
+       for (const auto& e : entries)
+        {
+         if (e.Price < low)
+            {
+                  low = e.Price;
+            }
+        }
+          return low;
+       }
+
+     double computeHighPrice(const vector<OrderBookEntry>& entries) 
+     {
+     
+       double high = entries[0].Price;
+       for (const auto& e : entries) 
+       {
+        if (e.Price > high) {
+            high = e.Price;
+        }
+       }
+             return high;
+      }
+
+     double computePriceSpread(const vector<OrderBookEntry>& entries)
+      {
+    
+       double low = computeLowPrice(entries);
+       double high = computeHighPrice(entries);
+         return high - low;
+      }
 
      // We are making function to make our code modular 
      //Print menu function  
@@ -187,63 +228,60 @@ using namespace std ;
  int main()
  {
     
-    // while(true)
-    // {  
+   //  while(true)
+   //  {  
     
-    //     Printmenu(); // Calling our function  to print the menu 
+   //      Printmenu(); // Calling our function  to print the menu 
        
-    //     int UserOption = GetUser() ; // function to take user's input 
-    //     ProcessUserOption(UserOption); //funtion to proceed with user option 
+   //      int UserOption = GetUser() ; // function to take user's input 
+   //      ProcessUserOption(UserOption); //funtion to proceed with user option 
     
-    //     if(UserOption == 7)
-    //     { 
-    //         break ;  // breaks the loop -> program ends
-    //          cout << "\n###################################################" << endl ; 
+   //      if(UserOption == 7)
+   //      { 
+   //          break ;  // breaks the loop -> program ends
+   //           cout << "\n###################################################" << endl ; 
     
-    //     }
+   //      }
           
-    // }          
-    
-
-     vector<double> price ; 
-     vector<double> Amount ; 
-     vector<string> Timestamp ; 
-     vector<string> Product ; 
-     vector<OrderBookType> OrderType ; 
-
-   
+   //  }          
 
      vector<OrderBookEntry> Orders ;
      
      Orders.push_back(OrderBookEntry{
-             0.003,
-             20.00 ,
-             "Fri 29 Aug, 1:40 PM",
-             "BTC/USDT",
-             OrderBookType :: bid    }) ; 
+            "2020/03/17 17:01:24.884492",
+            "ETH/BTC",
+             OrderBookType :: bid,    
+             3.467434, 
+             0.02187307, }) ;
      
      Orders.push_back(OrderBookEntry{
-             10.07,
-             5.667 ,
-             "Fri 29 Aug, 4:40 PM",
-             "BTC/USDT",
-             OrderBookType :: ask   }) ; 
+            "2020/03/17 17:01:24.884492",
+            "ETH/BTC",
+            OrderBookType :: bid ,     
+            0.02187305,
+            6.85567013  }) ;
 
       // method 3 to iterate 
 
      for(unsigned int i = 0 ; i < Orders.size() ; ++i)
       {
-           cout << "(Order # "<<  i << ") price : " << Orders.at(i).Price << endl ;  
-           cout << "(Order # "<<  i << ") amount : " << Orders.at(i).Amount << endl ;  
-           cout << "(Order # "<<  i << ") Timestamp : " << Orders.at(i).Timestamp << endl ;  
-           cout << "(Order # "<<  i << ") product : " << Orders.at(i).Product << endl ;  
-           cout << "(Order # "<<  i << ") order type : " 
-            << (Orders.at(i).OrderType == OrderBookType::bid ? "bid" : "ask") << endl ;  
-           cout << "\n<-------------------------------------------------------------> " << endl ;  
+            cout << Orders.at(i).Timestamp << "," << 
+            Orders.at(i).Product << "," <<
+            (Orders.at(i).OrderType == OrderBookType::bid ? "bid" : "ask") <<  "," << 
+            Orders.at(i).Price << "," << 
+            Orders.at(i).Amount << endl ; 
+            
       } 
 
+         // Print stats
+         cout << "\nBasic Price Stats:\n";
 
-                 
+         cout << "Average Price: " << computeAveragePrice(Orders) << endl ;
+         cout << "Lowest Price: " << computeLowPrice(Orders) << endl ;
+         cout << "Highest Price: " << computeHighPrice(Orders) << endl ;
+         cout << "Price Spread: " << computePriceSpread(Orders) << endl ;
+
+         cout << "\n<----------------BYE--------------->" << endl ;                 
 
     return 0 ; 
  }
