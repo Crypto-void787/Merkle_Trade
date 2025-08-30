@@ -1,19 +1,48 @@
 // Implementation file
  
  #include<iostream>
+ #include<vector>
  #include "MerkelMain.h"
+ #include "OrderBookEntry.h"
+ 
  using namespace std ; 
   
 
-     MerkelMain::MerkelMain()
-      {
-  
-      }
+    MerkelMain::MerkelMain()
+     {
+
+     }
 
      void MerkelMain::init()
      {
-     
+        LoadOrderBook() ; 
+        int input ; 
+      while(true)
+      {
+           Printmenu();
+           input = GetUser();
+           ProcessUserOption(input);
+      }
      }
+
+     void MerkelMain::LoadOrderBook()
+       {
+          Orders.push_back(OrderBookEntry{
+                     "2020/03/17 17:01:24.884492",
+                     "ETH/BTC",
+                     OrderBookType :: bid,    
+                     3.467434, 
+                     0.02187307 }) ;
+     
+          Orders.push_back(OrderBookEntry{
+                     "2020/03/17 17:01:24.884492",
+                     "ETH/BTC",
+                     OrderBookType :: bid ,     
+                     0.02187305,
+                     6.85567013 }) ; 
+       }
+
+
     void MerkelMain::Printmenu()
      {
      //  1- Print help 
@@ -70,7 +99,7 @@
     //print market stats function 
     void MerkelMain::Marketstats()
      {
-        cout << " Market's poppin' off! Prices look wild  " << endl ;
+      cout << "OrderBook contains:  " << Orders.size() << " entries." << endl ;
      }
 
     //Offer making function
@@ -102,6 +131,7 @@
      void MerkelMain::exitprogram()
      { 
             cout << "Exiting program... Bye!" << endl;
+            exit(0); 
      }
 
      // Invalid choice print function 
