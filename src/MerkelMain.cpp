@@ -4,6 +4,7 @@
  #include<vector>
  #include "MerkelMain.h"
  #include "OrderBookEntry.h"
+ #include "CSVReader.h"
  
  using namespace std ; 
   
@@ -17,29 +18,17 @@
      {
         LoadOrderBook() ; 
         int input ; 
-      while(true)
-      {
-           Printmenu();
-           input = GetUser();
-           ProcessUserOption(input);
-      }
+        while(true)
+         {
+            Printmenu();
+            input = GetUser();
+            ProcessUserOption(input);
+         }
      }
 
      void MerkelMain::LoadOrderBook()
        {
-          Orders.push_back(OrderBookEntry{
-                     "2020/03/17 17:01:24.884492",
-                     "ETH/BTC",
-                     OrderBookType :: bid,    
-                     3.467434, 
-                     0.02187307 }) ;
-     
-          Orders.push_back(OrderBookEntry{
-                     "2020/03/17 17:01:24.884492",
-                     "ETH/BTC",
-                     OrderBookType :: bid ,     
-                     0.02187305,
-                     6.85567013 }) ; 
+          Orders = CSVReader::readCSV("src/Data.csv"); 
        }
 
 
@@ -69,7 +58,7 @@
         cout << "__________________________________" << endl ; 
 
    
-     }
+     } 
    
 
     int MerkelMain::GetUser()
@@ -100,6 +89,24 @@
     void MerkelMain::Marketstats()
      {
       cout << "OrderBook contains:  " << Orders.size() << " entries." << endl ;
+    
+      unsigned int bids = 0 ; 
+      unsigned int asks = 0 ; 
+
+      for(OrderBookEntry& e :Orders)
+      {
+          if(e.OrderType == OrderBookType::ask)
+          {  
+             asks++ ; 
+          }
+          if(e.OrderType == OrderBookType::bid)
+          { 
+             bids++ ; 
+          }
+      }
+
+      cout << "OrderBook asks:  " << asks << " bids: " << bids<< endl ;
+
      }
 
     //Offer making function

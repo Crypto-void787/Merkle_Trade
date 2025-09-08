@@ -1,23 +1,25 @@
 
 #pragma once
-#include<string>
-using namespace std ; 
+#include<string> 
 
-enum class OrderBookType{bid , ask} ;
 
+enum class OrderBookType{bid , ask, unknown } ;
+ 
    class OrderBookEntry
    {
        public:
 
        OrderBookEntry(
-          string _Timestamp,
-          string _Product,
+          const std::string& _Timestamp,
+          const std::string& _Product,
           OrderBookType _OrderType,
           double _Price,
           double _Amount  );
 
-      string Timestamp;
-      string Product;
+   static OrderBookType StringToOrderBookType(const std::string& s) ;  
+
+      std::string Timestamp;
+      std::string Product;
       OrderBookType OrderType;
       double Price;
       double Amount;
