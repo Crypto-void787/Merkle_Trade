@@ -3,6 +3,7 @@
  #pragma once
  #include<vector>
  #include"OrderBookEntry.h"
+ #include"OrderBook.h"
 
  using namespace std ; 
 
@@ -11,16 +12,19 @@ class MerkelMain
 {
   
        private: 
+ 
+        OrderBook orderBook{"src/Data.csv"} ; 
 
-        vector<OrderBookEntry> Orders;
-        void LoadOrderBook(); 
+        std::string CurrentTime ; 
+        
         void PrintHelp();
         void Printmenu();
         void Marketstats();
+        void PrintVWAPStats();
         void OfferMaking();
         void PlaceBid();
         void PrintWallet();
-        void PrintContinue();
+        void GoToNextTimeframe();
         void exitprogram();
         void InvalidChoice();
         int GetUser();

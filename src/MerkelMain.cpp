@@ -16,8 +16,9 @@
 
      void MerkelMain::init()
      {
-        LoadOrderBook() ; 
+     
         int input ; 
+        CurrentTime = orderBook.GetEarliestTime() ;
         while(true)
          {
             Printmenu();
@@ -25,11 +26,6 @@
             ProcessUserOption(input);
          }
      }
-
-     void MerkelMain::LoadOrderBook()
-       {
-          Orders = CSVReader::readCSV("src/Data.csv"); 
-       }
 
 
     void MerkelMain::Printmenu()
@@ -50,10 +46,16 @@
         cout << "5- Print wallet" << endl ; 
 
         //  6- continue 
-        cout << "6- Continue" << endl ;  
-
+        cout << "6- Go to next timeframe" << endl ;  
+      
         // 7- exitprogram
         cout << "7- Exit" << endl ; 
+        
+        // 8- VWAP stats
+        cout << "8- Print VWAP price stats" << endl ;
+        
+        //Current time 
+        cout << "Current time is : " << CurrentTime << endl ; 
 
         cout << "__________________________________" << endl ; 
 
@@ -63,7 +65,7 @@
 
     int MerkelMain::GetUser()
      {
-        cout << "Type in 1 to 7 : " ; 
+        cout << "Type in 1 to 8 : " ; 
 
         int UserOption ; 
         cin >> UserOption ;  
@@ -88,32 +90,88 @@
     //print market stats function 
     void MerkelMain::Marketstats()
      {
-      cout << "OrderBook contains:  " << Orders.size() << " entries." << endl ;
+       std::cout << "=== MARKET STATISTICS (asks and bids) === " << std::endl;
+        
+        
+        for (std::string const& p : orderBook.GetKnownProducts())
+         {
+             std::cout << "Product: " << p << std::endl;
+             std::cout << std::endl ;
+
+               std::vector<OrderBookEntry> ask = orderBook.GetOrders(OrderBookType::ask,
+                                                                          p,
+                                                                         CurrentTime    ) ; 
+                                    
+                std::cout << "Ask seen : " << ask.size() << std::endl ; 
+                std::cout << "Max ask : " << OrderBook::GetHighPrice(ask) << std::endl ; 
+                std::cout << "Min ask : " << OrderBook::GetLowPrice(ask) << std::endl ;
+               //  std::cout << std::endl ; 
+
+                std::cout << "Avg ask : " << OrderBook::GetMeanPrice(ask) << std::endl ; 
+               //  std::cout << std::endl ;
+
+                std::cout << "Ask change (within timeframe) % : " << OrderBook::GetPercentageChange(ask) << std::endl ; 
+                std::cout << std::endl ; 
+
+
+
+               std::vector<OrderBookEntry> bid = orderBook.GetOrders(OrderBookType::bid,
+                                                                          p,
+                                                                          CurrentTime   ) ;
+
+                std::cout << "Bid seen : " << bid.size() << std::endl ;
+                std::cout << "Max bid : " << OrderBook::GetHighPrice(bid) << std::endl ;
+                std::cout << "Min bid : " << OrderBook::GetLowPrice(bid) << std::endl ;
+               //  std::cout << std::endl ; 
+
+                std::cout << "Avg bid : " << OrderBook::GetMeanPrice(bid) << std::endl ; 
+               //  std::cout << std::endl ;
+
+                std::cout <<  "Bid change (within timeframe) % : " << OrderBook::GetPercentageChange(bid) << std::endl ; 
+               //  std::cout << std::endl ;
+               
+                double spread = OrderBook::GetLowPrice(ask) - OrderBook::GetHighPrice(bid) ;
+                std::cout << "Spread   : " << spread << std::endl;
+               //  std::cout << std::endl ; 
+
+                std::cout << "<---------------------->" << std::endl ;
+
+                std::cout << std::endl ;
+                
+
+         }
+
+
+       std::cout << "=== END MARKET STATISTICS ===" << std::endl;
     
-      unsigned int bids = 0 ; 
-      unsigned int asks = 0 ; 
-
-      for(OrderBookEntry& e :Orders)
-      {
-          if(e.OrderType == OrderBookType::ask)
-          {  
-             asks++ ; 
-          }
-          if(e.OrderType == OrderBookType::bid)
-          { 
-             bids++ ; 
-          }
+       
       }
-
-      cout << "OrderBook asks:  " << asks << " bids: " << bids<< endl ;
-
-     }
 
     //Offer making function
     void MerkelMain::OfferMaking()
      {
         cout << " Drop an offer, boss! How much ya flexin' : " << endl ; 
      }
+
+void MerkelMain::PrintVWAPStats()
+{
+   std::cout << "=== VWAP PRICE STATS === " << std::endl;
+   for (std::string const& p : orderBook.GetKnownProducts())
+   {
+       auto asks = orderBook.GetOrders(OrderBookType::ask,
+                                        p,
+                                        CurrentTime);
+       auto bids = orderBook.GetOrders(OrderBookType::bid,
+                                        p,
+                                         CurrentTime);
+      
+       std::cout << "Product: " << p << std::endl;
+       std::cout << "VWAP ask: " << OrderBook::GetVWAP(asks) << std::endl;
+       std::cout << "VWAP bid: " << OrderBook::GetVWAP(bids) << std::endl;
+       std::cout << "<---------------------->" << std::endl ;
+   }
+   std::cout << "=== END VWAP PRICE STATS === " << std::endl;
+}
 
     //  Bid placing function 
     void MerkelMain::PlaceBid()
@@ -128,9 +186,10 @@
      }
 
      // Continue printing function 
-     void MerkelMain::PrintContinue()
+     void MerkelMain::GoToNextTimeframe()
      { 
          cout << "Fast-forwarding to the next timeframe... hang tight! " << endl ; 
+         CurrentTime = orderBook.GetNextTime(CurrentTime) ; 
      }
 
      // Exit function 
@@ -144,7 +203,7 @@
      // Invalid choice print function 
      void MerkelMain::InvalidChoice()
      { 
-        cout << "Invalid choice! Choose between 1-7  " << endl ; 
+        cout << "Invalid choice! Choose between 1-8  " << endl ; 
      }
      // Process user option 
     
@@ -178,9 +237,13 @@
 
          else if(UserOption == 6)
             {
-               PrintContinue(); 
+               GoToNextTimeframe(); 
             }
-         else if (UserOption == 7)
+        else if(UserOption == 7)
+           {
+              PrintVWAPStats();
+           }
+         else if (UserOption == 8)
             {  
              exitprogram() ;
              
