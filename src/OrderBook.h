@@ -34,8 +34,13 @@ class OrderBook
          /**Returns the avg of asks n bids of every unique timeframes */
          static double GetMeanPrice(std::vector<OrderBookEntry>& Orders ) ; 
 
-         /**Return Change in stats during 24 hrs  */
-         static double GetPercentageChange(std::vector<OrderBookEntry>& Orders);
+        /**Return change within a vector (first to last in same timeframe) */
+        static double GetPercentageChange(std::vector<OrderBookEntry>& Orders);
+
+        /**Return percentage change between previous and current timeframe */
+        double GetPercentageChange(OrderBookType Type,
+                                   std::string Product,
+                                   std::string CurrentTimestamp);
 
          /**Volume-weighted average price */
           static double GetVWAP(std::vector<OrderBookEntry>& Orders);

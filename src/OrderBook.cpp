@@ -139,6 +139,48 @@
          return Change ;
     }
 
+    double OrderBook::GetPercentageChange(OrderBookType Type,
+                                          std::string Product,
+                                          std::string CurrentTimestamp)
+    {
+        // Determine previous timestamp strictly less than CurrentTimestamp
+        std::string prevTimestamp = "";
+        for (OrderBookEntry& e : Orders)
+        {
+            if (e.Timestamp < CurrentTimestamp)
+            {
+                prevTimestamp = e.Timestamp;
+            }
+            else if (e.Timestamp >= CurrentTimestamp)
+            {
+                break;
+            }
+        }
+
+        if (prevTimestamp == "")
+        {
+            return 0.0;
+        }
+
+        auto prevOrders = GetOrders(Type, Product, prevTimestamp);
+        auto currOrders = GetOrders(Type, Product, CurrentTimestamp);
+
+        if (prevOrders.empty() || currOrders.empty())
+        {
+            return 0.0;
+        }
+
+        double prevMean = GetMeanPrice(prevOrders);
+        double currMean = GetMeanPrice(currOrders);
+
+        if (prevMean == 0.0)
+        {
+            return 0.0;
+        }
+
+        return ((currMean - prevMean) / prevMean) * 100.0;
+    }
+
    double OrderBook::GetVWAP(std::vector<OrderBookEntry>& Orders)
    {
        if (Orders.empty()) return 0.0;

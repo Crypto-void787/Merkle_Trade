@@ -48,11 +48,11 @@
         //  6- continue 
         cout << "6- Go to next timeframe" << endl ;  
       
-        // 7- exitprogram
-        cout << "7- Exit" << endl ; 
+        // 7- VWAP stats
+        cout << "7- Print VWAP price stats" << endl ;
         
-        // 8- VWAP stats
-        cout << "8- Print VWAP price stats" << endl ;
+        // 8- exitprogram
+        cout << "8- Exit" << endl ; 
         
         //Current time 
         cout << "Current time is : " << CurrentTime << endl ; 
@@ -105,12 +105,13 @@
                 std::cout << "Ask seen : " << ask.size() << std::endl ; 
                 std::cout << "Max ask : " << OrderBook::GetHighPrice(ask) << std::endl ; 
                 std::cout << "Min ask : " << OrderBook::GetLowPrice(ask) << std::endl ;
-               //  std::cout << std::endl ; 
 
                 std::cout << "Avg ask : " << OrderBook::GetMeanPrice(ask) << std::endl ; 
-               //  std::cout << std::endl ;
 
-                std::cout << "Ask change (within timeframe) % : " << OrderBook::GetPercentageChange(ask) << std::endl ; 
+               std::cout << "Ask change (prev vs current) % : " 
+                         << orderBook.GetPercentageChange(OrderBookType::ask, p, CurrentTime) 
+                         << std::endl ; 
+                         
                 std::cout << std::endl ; 
 
 
@@ -122,17 +123,15 @@
                 std::cout << "Bid seen : " << bid.size() << std::endl ;
                 std::cout << "Max bid : " << OrderBook::GetHighPrice(bid) << std::endl ;
                 std::cout << "Min bid : " << OrderBook::GetLowPrice(bid) << std::endl ;
-               //  std::cout << std::endl ; 
 
                 std::cout << "Avg bid : " << OrderBook::GetMeanPrice(bid) << std::endl ; 
-               //  std::cout << std::endl ;
 
-                std::cout <<  "Bid change (within timeframe) % : " << OrderBook::GetPercentageChange(bid) << std::endl ; 
-               //  std::cout << std::endl ;
+               std::cout <<  "Bid change (prev vs current) % : " 
+                         << orderBook.GetPercentageChange(OrderBookType::bid, p, CurrentTime) 
+                         << std::endl ; 
                
                 double spread = OrderBook::GetLowPrice(ask) - OrderBook::GetHighPrice(bid) ;
                 std::cout << "Spread   : " << spread << std::endl;
-               //  std::cout << std::endl ; 
 
                 std::cout << "<---------------------->" << std::endl ;
 
