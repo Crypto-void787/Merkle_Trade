@@ -2,8 +2,9 @@
 
  #pragma once
  #include<vector>
- #include"OrderBookEntry.h"
- #include"OrderBook.h"
+ #include "OrderBookEntry.h"
+ #include "OrderBook.h"
+ #include "Wallet.h"
 
  using namespace std ; 
 
@@ -13,15 +14,15 @@ class MerkelMain
   
        private: 
  
-        OrderBook orderBook{"src/Data.csv"} ; 
-
+        OrderBook orderBook{"src/Data.csv"} ;
         std::string CurrentTime ; 
         
+
         void PrintHelp();
         void Printmenu();
         void Marketstats();
         void PrintVWAPStats();
-        void OfferMaking();
+        void MakeAsk();
         void PlaceBid();
         void PrintWallet();
         void GoToNextTimeframe();
@@ -29,6 +30,9 @@ class MerkelMain
         void InvalidChoice();
         int GetUser();
         void ProcessUserOption(int UserOption);
+        
+        Wallet Wallet ; 
+
  
        public:
         MerkelMain(); 
