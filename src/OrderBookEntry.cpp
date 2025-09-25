@@ -4,16 +4,18 @@
 #include "OrderBookEntry.h"
 using namespace std ;
 
-OrderBookEntry::OrderBookEntry(const string& _Timestamp, 
-                               const string& _Product, 
+OrderBookEntry::OrderBookEntry(std::string  _Timestamp, 
+                               std::string _Product, 
                                OrderBookType _OrderType, 
                                double _Price, 
-                               double _Amount)
+                               double _Amount,
+                               std::string _username )
     : Timestamp(_Timestamp),
       Product(_Product),
       OrderType(_OrderType),
       Price(_Price),
-      Amount(_Amount)
+      Amount(_Amount),
+      username(_username)
 {
 }
 
