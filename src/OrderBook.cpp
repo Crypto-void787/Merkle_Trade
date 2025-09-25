@@ -2,6 +2,7 @@
 #include "OrderBook.h"
 #include "CSVReader.h"
 #include<map>
+#include<algorithm>
 
 
     OrderBook::OrderBook(std::string Filename)
@@ -126,60 +127,7 @@
     
     } 
 
-  double OrderBook::GetPercentageChange(std::vector<OrderBookEntry>& Orders)
-    {
-         if (Orders.empty()) return 0.0;
 
-         double FirstPrice = Orders.front().Price;
-         double LastPrice = Orders.back().Price;
-
-         if (FirstPrice == 0) return 0.0;
-
-         double Change = ((LastPrice - FirstPrice) / FirstPrice) * 100.0;
-         return Change ;
-    }
-
-    double OrderBook::GetPercentageChange(OrderBookType Type,
-                                          std::string Product,
-                                          std::string CurrentTimestamp)
-    {
-        // Determine previous timestamp strictly less than CurrentTimestamp
-        std::string prevTimestamp = "";
-        for (OrderBookEntry& e : Orders)
-        {
-            if (e.Timestamp < CurrentTimestamp)
-            {
-                prevTimestamp = e.Timestamp;
-            }
-            else if (e.Timestamp >= CurrentTimestamp)
-            {
-                break;
-            }
-        }
-
-        if (prevTimestamp == "")
-        {
-            return 0.0;
-        }
-
-        auto prevOrders = GetOrders(Type, Product, prevTimestamp);
-        auto currOrders = GetOrders(Type, Product, CurrentTimestamp);
-
-        if (prevOrders.empty() || currOrders.empty())
-        {
-            return 0.0;
-        }
-
-        double prevMean = GetMeanPrice(prevOrders);
-        double currMean = GetMeanPrice(currOrders);
-
-        if (prevMean == 0.0)
-        {
-            return 0.0;
-        }
-
-        return ((currMean - prevMean) / prevMean) * 100.0;
-    }
 
    double OrderBook::GetVWAP(std::vector<OrderBookEntry>& Orders)
    {
@@ -198,4 +146,95 @@
        return pv_sum / vol_sum;
    }
 
+    void OrderBook::InsertOrder(OrderBookEntry& order)
+    {
+        Orders.push_back(order) ;
+         std::sort(Orders.begin(), Orders.end(), OrderBookEntry::CompareByTimestamp) ; 
+    }
 
+    std::vector<OrderBookEntry> OrderBook::MatchAsksToBids(std::string Product, std::string Timestamp)
+    {
+         /**asks = OrderBook.asks */
+        std::vector<OrderBookEntry> asks = GetOrders(OrderBookType::ask,
+                                                     Product,
+                                                     Timestamp); 
+      
+         /**bids = OrderBook.bids */
+        std::vector<OrderBookEntry> bids = GetOrders(OrderBookType::bid,
+                                                     Product,
+                                                     Timestamp); 
+      
+           
+         //Sales =  []                                    
+         std::vector<OrderBookEntry> sales ; 
+          
+         // sorting ask lowest first
+         std::sort(asks.begin(), asks.end(), OrderBookEntry::CompareByPriceAsc) ; 
+         
+         //sorting bids highest first 
+         std::sort(bids.begin(), bids.end(), OrderBookEntry::CompareByPriceDecs) ; 
+
+        //  for ask in asks
+         for(OrderBookEntry& ask : asks)
+         { 
+            // for bids in bids
+            for(OrderBookEntry& bid : bids)
+            { 
+                if(bid.Price >= ask.Price){  
+                                            OrderBookEntry sale{ Timestamp , 
+                                            Product, 
+                                            OrderBookType::asksale, 
+                                            ask.Price, 
+                                             0 } ; 
+
+
+            
+            if(bid.username == "simuser")
+            {  
+                sale.username = "simuser" ;
+                sale.OrderType = OrderBookType::bidsale ; 
+            }
+            if(ask.username == "simuser")
+            { 
+                sale.username = "simuser" ;  
+                sale.OrderType = OrderBookType::asksale  ; 
+            }
+
+
+
+                   // 1. Bid amount == ask amount 
+                   if(bid.Amount == ask.Amount)
+                   { 
+                      sale.Amount = ask.Amount ; 
+                      sales.push_back(sale) ; 
+                      bid.Amount = 0 ; 
+                      break ; 
+                   }
+
+                  // 2. Bid amount > ask amount 
+                   if(bid.Amount > ask.Amount)
+                   {
+                      sale.Amount = ask.Amount ; 
+                      sales.push_back(sale) ; 
+                      bid.Amount = bid.Amount - ask.Amount ;
+                      break ; 
+                   }
+
+                  //  3. Bid amount < ask amount 
+                   if(bid.Amount < ask.Amount && bid.Amount > 0)
+                   {
+                     sale.Amount = bid.Amount ;
+                     sales.push_back(sale) ; 
+                     ask.Amount = ask.Amount - bid.Amount ;
+                     bid.Amount = 0 ; 
+                     continue ; 
+                   }
+
+                }
+
+            }
+
+         }
+         
+        return sales ; 
+    }
