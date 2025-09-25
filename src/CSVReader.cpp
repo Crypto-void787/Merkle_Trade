@@ -93,8 +93,8 @@
          catch(const std::exception& e)
          {
  
-          std::cout << "Bad float! " << tokens[3] << std::endl ; 
-          std::cout << "Bad float! " << tokens[4] << std::endl ; 
+          std::cout << "(CSVReader::StringsToOBE) Bad float! " << tokens[3] << std::endl ; 
+          std::cout << "(CSVReader::StringsToOBE) Bad float! " << tokens[4] << std::endl ; 
           throw ; 
  
          }
@@ -111,4 +111,33 @@
 
       }
       
-  
+       OrderBookEntry CSVReader::StringsToOBE( std::string Timestamp,
+                                          std::string Product, 
+                                          OrderBookType orderType,
+                                          std::string AmountString, 
+                                          std::string PriceString ) 
+          
+    {
+       double Price, Amount ; 
+      try
+        {
+            Price = std::stod(PriceString) ; 
+            Amount = std::stod(AmountString) ; 
+
+        }
+      catch(const std::exception& e)
+        {
+
+          std::cout << "(CSVReader::StringsToOBE) Bad float! " << PriceString << std::endl ; 
+          std::cout << "(CSVReader::StringsToOBE) Bad float! " << AmountString << std::endl ; 
+          throw ; 
+
+        }   
+       OrderBookEntry obe{
+                           Timestamp,
+                           Product,
+                           orderType,
+                           Price,
+                           Amount};
+       return obe ;
+    }
