@@ -1,7 +1,8 @@
 // Implementation file
  
- #include<iostream>
- #include<vector>
+#include<iostream>
+#include<vector>
+#include <limits>
  #include "MerkelMain.h"
  #include "OrderBookEntry.h"
  #include "CSVReader.h"
@@ -19,6 +20,7 @@
      
         int input ; 
         CurrentTime = orderBook.GetEarliestTime() ;
+        Wallet.InsertCurrency("BTC" , 10) ;
         while(true)
          {
             Printmenu();
@@ -36,8 +38,8 @@
         // 2- Print exchange stats
         cout << "2- Print exchange stats" << endl ; 
 
-        // 3- Make an offer 
-        cout << "3- Make an offer" << endl ; 
+        // 3- Make an ask
+        cout << "3- Make an ask" << endl ;
 
         // 4- Make a bid 
         cout << "4- Make a bid" << endl ; 
@@ -67,8 +69,18 @@
      {
         cout << "Type in 1 to 8 : " ; 
 
-        int UserOption ; 
-        cin >> UserOption ;  
+        int UserOption = 0  ; 
+        string Line ; 
+        getline(cin, Line) ; 
+        try
+        {
+           UserOption = stoi(Line) ;
+        }
+        catch(const exception& e)
+         {
+            cout << "(MerkelMain::GetUser) Bad line! " << endl ; 
+         }
+
         cout << "You choose option " << UserOption << " to proceed." << endl ;  
 
         cout << "\n###################################################" << endl ; 
@@ -108,9 +120,6 @@
 
                 std::cout << "Avg ask : " << OrderBook::GetMeanPrice(ask) << std::endl ; 
 
-               std::cout << "Ask change (prev vs current) % : " 
-                         << orderBook.GetPercentageChange(OrderBookType::ask, p, CurrentTime) 
-                         << std::endl ; 
                          
                 std::cout << std::endl ; 
 
@@ -126,9 +135,6 @@
 
                 std::cout << "Avg bid : " << OrderBook::GetMeanPrice(bid) << std::endl ; 
 
-               std::cout <<  "Bid change (prev vs current) % : " 
-                         << orderBook.GetPercentageChange(OrderBookType::bid, p, CurrentTime) 
-                         << std::endl ; 
                
                 double spread = OrderBook::GetLowPrice(ask) - OrderBook::GetHighPrice(bid) ;
                 std::cout << "Spread   : " << spread << std::endl;
@@ -147,49 +153,155 @@
       }
 
     //Offer making function
-    void MerkelMain::OfferMaking()
+    void MerkelMain::MakeAsk()
      {
-        cout << " Drop an offer, boss! How much ya flexin' : " << endl ; 
+       cout << "Drop an ask, boss! How much ya flexin'[Product, Price, Amount (eg: ETH/BTC,200,0.56)]: " ; 
+       string input ; 
+       
+       getline(cin , input) ;
+
+       vector<string> Tokens = CSVReader::tokenise(input , ',') ;
+       
+       if(Tokens.size() != 3)
+       { 
+          cout << "Bad input! " << input << endl ; 
+       }
+       else 
+       { 
+          try 
+          {
+            OrderBookEntry obe = CSVReader::StringsToOBE(
+                                                           CurrentTime , 
+                                                           Tokens[0],
+                                                           OrderBookType::ask ,
+                                                           Tokens[2] , 
+                                                           Tokens[1] ) ;       
+            
+            obe.username = "simuser" ; 
+            
+            if(Wallet.CanFulfillOrder(obe))
+            { 
+               cout << "Wallet Looks good. " << endl ; 
+               orderBook.InsertOrder(obe) ;         
+            } 
+            else 
+             {
+               cout << "Wallet has insufficient funds. " << endl ; 
+             }   
+
+         }
+         catch(const exception& e)
+         { 
+             cout << "(MerkelMain::MakeAsk) Bad input! " << endl ; 
+         }
+
+       }
+
+       cout << "You typed : " << input << endl ; 
+
      }
 
-void MerkelMain::PrintVWAPStats()
-{
-   std::cout << "=== VWAP PRICE STATS === " << std::endl;
-   for (std::string const& p : orderBook.GetKnownProducts())
-   {
-       auto asks = orderBook.GetOrders(OrderBookType::ask,
-                                        p,
-                                        CurrentTime);
-       auto bids = orderBook.GetOrders(OrderBookType::bid,
-                                        p,
-                                         CurrentTime);
-      
-       std::cout << "Product: " << p << std::endl;
-       std::cout << "VWAP ask: " << OrderBook::GetVWAP(asks) << std::endl;
-       std::cout << "VWAP bid: " << OrderBook::GetVWAP(bids) << std::endl;
-       std::cout << "<---------------------->" << std::endl ;
-   }
-   std::cout << "=== END VWAP PRICE STATS === " << std::endl;
-}
-
-    //  Bid placing function 
+     
+    //Bid making function
     void MerkelMain::PlaceBid()
      {
-         cout << "Time to place a bid! Make a bid buddy : " << endl ; 
+       cout << "Drop a bid, boss! Whatchu offerin' [Product, Price, Amount (eg: ETH/BTC,200,0.56)]: " ; 
+       string input ; 
+       
+       getline(cin , input) ;
+
+       vector<string> Tokens = CSVReader::tokenise(input , ',') ;
+       
+       if(Tokens.size() != 3)
+       { 
+          cout << "Bad input! " << input << endl ; 
+       }
+       else 
+       { 
+          try 
+          {
+            OrderBookEntry obe = CSVReader::StringsToOBE(
+                                                           CurrentTime , 
+                                                           Tokens[0],
+                                                           OrderBookType::bid ,
+                                                           Tokens[2] , 
+                                                           Tokens[1] ) ;       
+
+            obe.username = "simuser" ; 
+
+             if(Wallet.CanFulfillOrder(obe))
+             { 
+               cout << "Wallet Looks good. " << endl ; 
+               orderBook.InsertOrder(obe) ;         
+             } 
+             else 
+             {
+               cout << "Wallet has insufficient funds. " << endl ; 
+             }   
+
+         }
+         catch(const exception& e)
+         { 
+             cout << "(MerkelMain::PlaceBid) Bad input! " << endl ; 
+         }
+
+       }
+
+       cout << "You typed : " << input << endl ; 
+
      }
 
+     
     //Wallet printing function 
     void  MerkelMain::PrintWallet()
      {
-          cout << " Wallet lookin' empty... time to stack some coins fam. " << endl ;
+          cout << Wallet.ToString() << endl ; 
      }
 
      // Continue printing function 
      void MerkelMain::GoToNextTimeframe()
      { 
-         cout << "Fast-forwarding to the next timeframe... hang tight! " << endl ; 
+         cout << "Fast-forwarding to the next timeframe... hang tight! " << endl ;
+         std::vector<OrderBookEntry> sales = orderBook.MatchAsksToBids("ETH/BTC" , CurrentTime) ;   
+         std::cout << "Sales : " << sales.size() << std::endl ; 
+
+         for(OrderBookEntry& sale: sales)
+         { 
+             std::cout << "Sale Price: " << sale.Price << ", Amount : " << sale.Amount << std::endl ; 
+
+             if(sale.username =="simuser")
+             { 
+                Wallet.ProcessSale(sale) ;  
+
+             }
+
+         }
+
          CurrentTime = orderBook.GetNextTime(CurrentTime) ; 
+
      }
+
+   // VWAP stats printing function
+   void MerkelMain::PrintVWAPStats()
+   {
+      std::cout << "=== VWAP PRICE STATS === " << std::endl;
+      for (std::string const& p : orderBook.GetKnownProducts())
+      {
+         auto asks = orderBook.GetOrders(OrderBookType::ask,
+                                          p,
+                                          CurrentTime);
+         auto bids = orderBook.GetOrders(OrderBookType::bid,
+                                          p,
+                                          CurrentTime);
+         
+         std::cout << "Product: " << p << std::endl;
+         std::cout << "VWAP ask: " << OrderBook::GetVWAP(asks) << std::endl;
+         std::cout << "VWAP bid: " << OrderBook::GetVWAP(bids) << std::endl;
+         std::cout << "<---------------------->" << std::endl ;
+      }
+      std::cout << "=== END VWAP PRICE STATS === " << std::endl;
+   }
+
 
      // Exit function 
 
@@ -221,7 +333,7 @@ void MerkelMain::PrintVWAPStats()
         
          else if(UserOption == 3)
             {
-               OfferMaking() ; 
+               MakeAsk() ; 
             }
 
          else if(UserOption == 4)
