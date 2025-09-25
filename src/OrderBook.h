@@ -27,24 +27,22 @@ class OrderBook
          /**Returns next time after the sim time in the order book */
          std::string GetNextTime(std::string CurrentTimestamp) ;                       
 
+         /**Highest prices of ask n bids in current timeframe  */
          static double GetHighPrice(std::vector<OrderBookEntry>& Orders) ;
 
+         /** Lowest preices of asks n bids in current timeframe  */
          static double GetLowPrice(std::vector<OrderBookEntry>& Orders) ;
 
          /**Returns the avg of asks n bids of every unique timeframes */
          static double GetMeanPrice(std::vector<OrderBookEntry>& Orders ) ; 
 
-        /**Return change within a vector (first to last in same timeframe) */
-        static double GetPercentageChange(std::vector<OrderBookEntry>& Orders);
-
-        /**Return percentage change between previous and current timeframe */
-        double GetPercentageChange(OrderBookType Type,
-                                   std::string Product,
-                                   std::string CurrentTimestamp);
-
          /**Volume-weighted average price */
           static double GetVWAP(std::vector<OrderBookEntry>& Orders);
 
+          void InsertOrder(OrderBookEntry& Orders) ; 
+
+          /** Matches asks to bids and returns the matched orders */
+          std::vector<OrderBookEntry> MatchAsksToBids(std::string Product, std::string Timestamp) ;
          
     private:
         std::vector<OrderBookEntry> Orders;
