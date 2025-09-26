@@ -33,7 +33,7 @@ A console-based cryptocurrency trading platform built in C++ as part of my Objec
 🔹 Installation & Usage
 
 Clone the repo:
-git clone https://github.com/CryptoVoid787/Merkle_Trade.git
+git clone https://github.com/Crypto-Void787/Merkle_Trade.git
 
 👉🏻 Open in your preferred C++ IDE.
 
